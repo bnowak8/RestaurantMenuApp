@@ -7,25 +7,23 @@
 package model;
 
 import db.access.DBAccess;
-import db.access.IDBAccess;
-import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import static model.Consts.*;
 
 /**
  *
  * @author mashit
  */
-public class MenuOrderService {
+public class MenuListService {
     IItemListDAO menuItemsDAO;
-    IDBAccess db;
+    DBAccess db;
 
-    public MenuOrderService(){
+    public MenuListService(){
         db = new DBAccess();
         menuItemsDAO = new MenuItemListDAO(db);
     }
 
     public void getCurrentMenuItemList(HttpServletRequest request) throws DataAccessException{
-        request.setAttribute("menuList", menuItemsDAO.getCurrentItemList());
+        request.setAttribute(MENU_LIST, menuItemsDAO.getCurrentItemList());
     }
-
 }

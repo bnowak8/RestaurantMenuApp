@@ -6,18 +6,12 @@
 
 package model;
 
-import java.util.List;
-
 /**
  *
- * @author mashit
+ * @author bNowak8
  */
-public interface IItemListDAO extends IDAO{
-    
-    @Override
+public interface IDAO {
     public abstract void openDbConnection() throws DataAccessException;
-    @Override
     public abstract void closeDbConnection() throws DataAccessException;
-    List<MenuItem> getCurrentItemList() throws DataAccessException;
     
 }

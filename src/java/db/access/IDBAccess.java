@@ -23,7 +23,7 @@ public interface IDBAccess {
 
     public abstract List getCurrentRecords(String sqlString) throws SQLException;
     
-    public abstract boolean insertNewRecord() throws SQLException;
+    public abstract boolean insertNewRecord(int item_id, int quantity) throws SQLException;
     
     
 }

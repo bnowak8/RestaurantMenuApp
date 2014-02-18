@@ -61,8 +61,6 @@ public class DBAccess implements IDBAccess{
 
         } catch (SQLException sqle) {
                 throw sqle;
-        } catch (Exception e) {
-                throw e;
         } finally {
                 try {
                         stmt.close();
@@ -76,17 +74,44 @@ public class DBAccess implements IDBAccess{
     }
 
     @Override
-    public boolean insertNewRecord() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean insertNewRecord(int item_id, int quantity) throws SQLException {
+        Statement stmt = null;
+        
+        try{
+        stmt = conn.createStatement();
+        stmt.executeUpdate(buildInsertStmt(item_id,quantity));
+        }catch(SQLException e){
+            return false;
+           
+        }finally{
+            try{
+                stmt.close();
+                conn.close();
+            }catch(SQLException e){
+                throw e;
+            }
+        }
+        
+        return true;
+        
+        
     }
     
-    public static void main(String[] args) throws Exception {
-            DBAccess db = new DBAccess();
-            db.openConnection("com.mysql.jdbc.Driver", 
-                    "jdbc:mysql://localhost:3306/restaurant", 
-                    "root", "");
-            
-            List records = db.getCurrentRecords("select id, item_name, item_price from menu");
-            System.out.println(records);
-        }
+    private String buildInsertStmt(int item_id, int quantity){
+        String stmt = null;
+        stmt += "INSERT INTO restaurant.order VALUES();\n" +
+"INSERT INTO restaurant.order_item VALUES(null,(SELECT MAX(order_id) FROM restaurant.order)," + item_id + "," + quantity + ");";
+        
+        stmt += "UPDATE restaurant.order SET order_total = \n" +
+"	(SELECT item_price FROM restaurant.menu_item WHERE menu_item.item_id = \n" +
+"		(SELECT item_id FROM restaurant.order_item WHERE order_item.order_id = \n" +
+"			(SELECT MAX(order_id) FROM restaurant.order_item))) \n" +
+"	* \n" +
+"	(SELECT item_quantity FROM restaurant.order_item WHERE order_item.order_id = \n" +
+"		(SELECT MAX(order_id) FROM restaurant.order_item)) WHERE order.order_id = \n" +
+"			(SELECT MAX(order_id) FROM restaurant.order_item);";
+        return stmt;
+        
+    }
+    
 }

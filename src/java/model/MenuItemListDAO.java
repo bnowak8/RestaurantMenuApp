@@ -10,6 +10,7 @@ import db.access.IDBAccess;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.*;
+import static model.Consts.*;
 
 /**
  *
@@ -18,32 +19,33 @@ import java.util.*;
 
 public class MenuItemListDAO implements IItemListDAO{
     IDBAccess db;
-    private static final String GET_CURRENT_MENU_ITEMS =
-            "SELECT id,item_name,item_price FROM menu";
+                                
 
     public MenuItemListDAO(IDBAccess db){
         this.db = db;
     }
 
-    private void openLocalDbConnection() throws DataAccessException{
+    @Override
+    public void openDbConnection() throws DataAccessException{
             
         try{
-            db.openConnection(
-                    "com.mysql.jdbc.Driver",
-                    "jdbc:mysql://localhost:3306/restaurant",
-                    "root", "");
+            db.openConnection(DB_DRIVER, DB_URL, DB_USER_NAME, DB_PSWD);
         } catch (IllegalArgumentException | ClassNotFoundException | SQLException ex) {
             throw new DataAccessException(ex.getMessage(), ex);
         }
     }
-    
-    
+
+    /**
+     *
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public List<MenuItem> getCurrentItemList() throws DataAccessException{
         List<Map> raw = new ArrayList<>();
         List<MenuItem> items = new ArrayList<>();
         
-        this.openLocalDbConnection();
+        this.openDbConnection();
         
         try{
             raw = db.getCurrentRecords(GET_CURRENT_MENU_ITEMS);
@@ -58,24 +60,24 @@ public class MenuItemListDAO implements IItemListDAO{
         for (Map m : raw) {
             menuItem = new MenuItem();
 
-            String id = m.get("id").toString();
+            String id = m.get(ITEM_ID).toString();
             menuItem.setId(Integer.valueOf(id));
-            String itemName = m.get("item_name").toString();
+            String itemName = m.get(ITEM_NAME).toString();
             menuItem.setName(itemName);
-            String itemPrice = m.get("item_price").toString();
+            String itemPrice = m.get(ITEM_PRICE).toString();
             menuItem.setPrice(Double.valueOf(itemPrice));
 
 
             items.add(menuItem);
         }
-
         return items;
-        
     }
 
     @Override
-    public void saveItemOrder(List<MenuItem> orderList) throws RuntimeException {
+    public void closeDbConnection() throws DataAccessException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+  
     
 }

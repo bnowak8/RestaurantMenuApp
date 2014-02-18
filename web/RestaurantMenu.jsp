@@ -27,19 +27,20 @@
                 
             </div>
             <div id="content">
+        <form id="menuOrder" name="menuOrder" method="POST" action="Menu">
                 <table>
                     <tr>
                         <th>ID</th>
                         <th>Item Name</th>
                         <th>Item Price</th>
+                        <th>Quantity</th>
                     </tr>
-                    
-                    
                     <c:forEach items="${menuList}" var="menuItem">
                         <tr>
                             <td><c:out value="${menuItem.id}"/></td>
                             <td><c:out value="${menuItem.name}"/></td>
                             <td><c:out value="${menuItem.price}"/></td>
+                            <td><button type="submit" value="${menuItem}" name="Item">Add Item</button></td>
                         </tr>
                     </c:forEach> 
                 </table>
